@@ -1,0 +1,329 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/IBM_Plex_Sans/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/IBM_Plex_Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  @keyframes fade {
+    0% {
+      opacity: 0
+    }
+
+    100% {
+      opacity: 1
+    }
+  }
+
+  --animate-fade: fade;
+
+  --btn-shadow: var(--btn-shadow);
+  --color-background: var(--background);
+  --color-background-gradient: var(--background-gradient);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  /* Work-order status tokens (unified across the whole app) */
+  --color-st-open: var(--st-open);
+  --color-st-progress: var(--st-progress);
+  --color-st-done: var(--st-done);
+  --color-st-cancel: var(--st-cancel);
+  --color-st-overdue: var(--st-overdue);
+  --color-tab: var(--tab);
+  --color-link: var(--link);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-card-shadow: var(--card-shadow);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-ibm: 'IBM Plex Sans',
+  'sans-serif';
+}
+
+:root {
+  --scrollbar: rgb(139, 139, 139, 0.5);
+  --scrollbar-hover: rgb(139, 139, 139, 0.9);
+  --btn-shadow: oklch(34.846% 0.00004 271.152);
+  /* Sharp 3px corners app-wide (matches chat-assistant spec) */
+  --radius: 0.1875rem;
+  --background: #f2ede4;
+  /* Flat warm cream — no gradient in light mode */
+  --background-gradient: linear-gradient(#f2ede4, #f2ede4);
+
+  --foreground: #1a1614;
+  --card: #faf6ef;
+  --card-foreground: #1a1614;
+  --card-shadow: #ddd4c4;
+  --popover: #ffffff;
+  --popover-foreground: #1a1614;
+  /* Unified steel-blue accent (matches --accent-info / chat-assistant spec) */
+  --primary: #3b7bb8;
+  --primary-foreground: #ffffff;
+  --secondary: oklch(88.224% 0.0001 271.152);
+  --secondary-foreground: oklch(0% 0 0);
+  --muted: #e8e1d4;
+  --muted-foreground: #6b6358;
+  --accent: oklch(84.911% 0.00108 12.265);
+  --accent-foreground: oklch(0.205 0 0);
+  /* Theme-independent "Ask Arkim" blue — sidebar selected border + accents */
+  --accent-info: #3b7bb8;
+  /* Coral critical (not blood-red) */
+  --destructive: #c75545;
+  --border: #e5ddd0;
+  --input: #d9cfbe;
+  --ring: oklch(0.708 0 0);
+  --link: oklch(54.001% 0.25542 262.302);
+  --success: #6b9e7e;
+  --tab: oklch(37.648% 0.20081 299.511);
+  /* Warm gold / amber */
+  --warning: #d89b5a;
+  /* ── Work-order status (unified, spec hues) ── */
+  --st-open: oklch(0.56 0.105 70);      /* amber */
+  --st-progress: oklch(0.50 0.100 245); /* blue */
+  --st-done: oklch(0.50 0.080 158);     /* green */
+  --st-cancel: var(--muted-foreground); /* grey */
+  --st-overdue: oklch(0.53 0.150 33);   /* rust / red */
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: #faf6ef;
+  --sidebar-foreground: #1a1614;
+  --sidebar-primary: #dbe9ff;
+  --sidebar-primary-foreground: #265eb8;
+  /* Neutral warm hover for dropdowns etc. (nav hover handled in CSS below) */
+  --sidebar-accent: #ece6db;
+  --sidebar-accent-foreground: #6b6358;
+  --sidebar-border: oklch(0% 0 0);
+  --sidebar-ring: oklch(0% 0 0);
+}
+
+.dark {
+  /* Sharp 3px corners app-wide */
+  --radius: 0.1875rem;
+  --scrollbar: rgb(87, 87, 87, 0.5);
+  --scrollbar-hover: rgb(75, 75, 75);
+  --btn-shadow: rgba(0, 0, 0, 0.9);
+  /* Neutral near-black (primary brand) — no navy */
+  --background: #0a0a0a;
+  --background-gradient: radial-gradient(120% 80% at 50% -8%,
+      #121214 0%,
+      #0a0a0a 46%);
+  --foreground: oklch(0.91 0 0);
+  --card: #141414;
+  --card-foreground: oklch(0.91 0 0);
+  --card-shadow: rgba(0, 0, 0, 0.6);
+  --popover: #141414;
+  --popover-foreground: oklch(0.91 0 0);
+  /* Unified steel-blue accent */
+  --primary: #3b7bb8;
+  --primary-foreground: #ffffff;
+  --secondary: oklch(0.25 0.01 260);
+  --secondary-foreground: oklch(0.91 0 0);
+  --muted: oklch(0.28 0.01 260);
+  --muted-foreground: oklch(0.70 0 0);
+  --accent: oklch(30.464% 0.01164 264.416);
+  --accent-foreground: oklch(0.91 0 0);
+  /* Theme-independent "Ask Arkim" blue — same value as light */
+  --accent-info: #3b7bb8;
+  /* Coral critical (not blood-red) */
+  --destructive: oklch(67% 0.15 35);
+  /* Subtle dark-grey border on near-black */
+  --border: #2a2a2a;
+  --input: rgb(92, 92, 92);
+  --ring: oklch(0.75 0.13 255);
+  --link: oklch(66.906% 0.18376 248.826);
+  --success: oklch(60.056% 0.14532 156.064);
+  --tab: oklch(74.81% 0.18844 314.159);
+  --warning: oklch(75.862% 0.17676 60.629);
+  /* ── Work-order status (unified, spec hues — brighter for near-black) ── */
+  --st-open: oklch(0.80 0.085 80);      /* amber */
+  --st-progress: oklch(0.70 0.085 240); /* blue */
+  --st-done: oklch(0.76 0.060 158);     /* green */
+  --st-cancel: var(--muted-foreground); /* grey */
+  --st-overdue: oklch(0.70 0.115 38);   /* rust / red */
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: #141414;
+  --sidebar-foreground: oklch(0.91 0 0);
+  --sidebar-primary: oklch(22.885% 0.02628 258.341);
+  --sidebar-primary-foreground: oklch(0.75 0.13 255);
+  --sidebar-accent: oklch(0.28 0.01 260);
+  --sidebar-accent-foreground: oklch(0.70 0 0);
+  --sidebar-border: oklch(0.25 0.01 260);
+  --sidebar-ring: oklch(0.75 0.13 255);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-ibm;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .bento-card {
+    @apply rounded-md border border-muted bg-card shadow-md shadow-card-shadow;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+.scrollable:hover {
+  scrollbar-color: var(--scrollbar-hover) transparent !important;
+}
+
+body {
+  background-image: var(--background-gradient);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.page-header {
+  @apply text-3xl font-bold tracking-tight;
+}
+
+.page-subTitle {
+  @apply text-muted-foreground text-sm;
+}
+
+/* ── Sidebar nav items: neutral gray hover, blue selected ──────────────── */
+[data-slot="sidebar-menu-button"] {
+  border-left: 2px solid transparent;
+  transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+/* Hover (non-active): subtle neutral gray, no border — works in both themes */
+[data-slot="sidebar-menu-button"]:hover {
+  background-color: rgba(128, 128, 128, 0.08) !important;
+}
+/* Selected: blue left border + light blue tint, neutral text/icon */
+[data-slot="sidebar-menu-button"][data-active="true"] {
+  border-left-color: var(--accent-info) !important;
+  background-color: rgba(74, 149, 212, 0.10) !important;
+  color: var(--foreground) !important;
+}
+/* Selected + hovered: keep the blue, slightly deeper (don't fall back to gray) */
+[data-slot="sidebar-menu-button"][data-active="true"]:hover {
+  background-color: rgba(74, 149, 212, 0.14) !important;
+}
+/* Drop the old red/coral icon coloring on the active item — keep it neutral */
+[data-slot="sidebar-menu-button"][data-active="true"] svg {
+  color: var(--muted-foreground) !important;
+}
+
+/* ── ArkimLoader: branded indeterminate loader (mark + sweeping highlight) ── */
+@keyframes arkim-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes arkim-sweep {
+  0% { transform: translateY(-110%); }
+  100% { transform: translateY(180%); }
+}
+.arkim-loader-mark {
+  animation: arkim-pulse 1.6s ease-in-out infinite;
+}
+.arkim-loader-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.arkim-loader-sweep::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--primary) 50%, transparent),
+    transparent
+  );
+  animation: arkim-sweep 1.6s cubic-bezier(0.5, 0.05, 0.5, 0.95) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arkim-loader-mark { animation: none; opacity: 0.7; }
+  .arkim-loader-sweep::after { animation: none; display: none; }
+}
+
+/* ── Ask Arkim launcher: blue gradient in both themes ──────────────────── */
+.ask-arkim-button {
+  background: linear-gradient(135deg, #4a95d4 0%, #2e6fa8 100%);
+  color: #fff;
+  transition: background 140ms ease, transform 120ms ease;
+}
+.ask-arkim-button:hover {
+  background: linear-gradient(135deg, #5ba3dd 0%, #3d7fb8 100%);
+}

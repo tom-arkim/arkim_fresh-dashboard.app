@@ -1,0 +1,64 @@
+image: node:20
+
+definitions:
+  caches:
+    npm-global: ~/.npm
+    eslint: node_modules/.cache/.eslintcache
+
+  steps:
+    - step: &deploy-frontend-step
+        name: Build and Deploy React Frontend
+        oidc: true
+        caches:
+          - node
+          - npm-global
+          - eslint
+        script:
+          # Install AWS CLI
+          - apt-get update && apt-get install -y awscli
+
+          # Set AWS credentials based on deployment environment
+          - |
+            if [ "$BITBUCKET_DEPLOYMENT_ENVIRONMENT" = "dev" ]; then
+              export AWS_ROLE_ARN="arn:aws:iam::${AWS_ACCOUNT_ID_DEV}:role/${AWS_ASSUME_ROLE_NAME}"
+            elif [ "$BITBUCKET_DEPLOYMENT_ENVIRONMENT" = "test" ]; then
+              export AWS_ROLE_ARN="arn:aws:iam::${AWS_ACCOUNT_ID_TEST}:role/${AWS_ASSUME_ROLE_NAME}"
+            elif [ "$BITBUCKET_DEPLOYMENT_ENVIRONMENT" = "prod" ]; then
+              export AWS_ROLE_ARN="arn:aws:iam::${AWS_ACCOUNT_ID_PROD}:role/${AWS_ASSUME_ROLE_NAME}"
+            else
+              echo "Unknown deployment environment: $BITBUCKET_DEPLOYMENT_ENVIRONMENT"
+              exit 1
+            fi
+
+          # Set up OIDC authentication
+          - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+          - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+          - export AWS_REGION=us-west-2
+
+          # Make deploy script executable and run it
+          - chmod +x deploy.sh
+          - ./deploy.sh
+
+        artifacts:
+          - build/**
+
+pipelines:
+  # Tag-based deployment pipelines
+  tags:
+    dev-*:
+      - step:
+          <<: *deploy-frontend-step
+          name: Deploy to Dev Environment
+          deployment: dev
+
+    test-*:
+      - step:
+          <<: *deploy-frontend-step
+          name: Deploy to Test Environment
+          deployment: test
+
+    prod-*:
+      - step:
+          <<: *deploy-frontend-step
+          name: Deploy to Production Environment
+          deployment: prod
